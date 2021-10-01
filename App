@@ -1,0 +1,519 @@
+import java.io.FileOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+
+public class App {
+	/**
+	 * Main Class for calling functions and procedures
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
+	public static void main(String[] args) throws IOException {
+		// Declaracion de variables clientes.txt
+		String[] nombre = new String[1000];
+		String[] apellido = new String[1000];
+		String[] rut = new String[1000];
+		String[] contraseña = new String[1000];
+		int[] saldo = new int[1000];
+		// Declaracion de variables status.txt
+		String[] rutEstado = new String[1000];
+		String[] estado = new String[1000];
+		// Declaracion de variables peliculas.txt
+		String[] nombrePelicula = new String[1000];
+		String[] tipoPelicula = new String[1000];
+		int[] recaudacion = new int[1000];
+		String[] variable = new String[1000];
+		// Llamado de funciones
+		int cantC = lecturaClientes(nombre, apellido, rut, contraseña, saldo);
+		int cantP = lecturaPeliculas(nombrePelicula, tipoPelicula, recaudacion, variable);
+		int cantS = lecturaStatus(rutEstado, estado);
+		// String[][] inventario = new String[cantC][cantP];
+		int sala1[][] = new int[11][31];
+		int sala2[][] = new int[11][31];
+		int sala3[][] = new int[11][31];
+		int[] inventario = new int[1000];
+		iniciarSesion(rut, contraseña, nombre, apellido, nombrePelicula, variable, cantC, cantP, variable, variable,
+				recaudacion, recaudacion, inventario, sala1);
+
+	}
+
+	/**
+	 * Class to create matriz
+	 * 
+	 * @param sala
+	 *
+	 */
+	private static void desplegarMatriz(int[][] sala) {
+		char abc[] = { ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
+		for (int i = 0; i < abc.length; i++) {
+			if (i == 10) {
+				System.out.print("\n" + "[" + abc[i] + "]" + " ");
+			} else {
+				System.out.print("\n" + "[" + abc[i] + "]" + " ");
+			}
+			for (int j = 1; j < 31; j++) {
+				if (i == 0) {
+					sala[i][j] = j;
+					System.out.print("[" + sala[i][j] + "]" + "     ");
+				} else {
+					if ((i > 0 && i < 6) && (j < 6 || j >= 26)) {
+						if (j >= 0 && j < 10) {
+							sala[i][j] = 1;
+							System.out.print("[" + sala[i][j] + "]" + "     ");
+						} else {
+							sala[i][j] = 1;
+							System.out.print("[" + sala[i][j] + "]" + "      ");
+						}
+					} else {
+						if (j >= 0 && j < 10) {
+							System.out.print("[" + sala[i][j] + "]" + "     ");
+						} else {
+							System.out.print("[" + sala[i][j] + "]" + "      ");
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Class to formatRut
+	 * 
+	 * @param rut
+	 * 
+	 */
+	public static String formateoRut(String rut) {
+		rut = rut.replace(",", "");
+		rut = rut.replace("-", "");
+		return rut;
+	}
+
+	/**
+	 * Class to search indexes
+	 * 
+	 * @param lista
+	 * @param llave
+	 * @param cantidad
+	 * @return returns the position of the name in the array
+	 */
+	public static int index(String[] lista, String llave, int cantidad) {
+		for (int i = 0; i < cantidad; i++) {
+			if (lista[i].equals(llave)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	/**
+	 * Class to read data Clientes.txt from files and store information
+	 * 
+	 * @param nombres
+	 * @param apellidos
+	 * @param ruts
+	 * @param contraseñas
+	 * @param saldos
+	 * @return returns the total amount entered
+	 * @throws IOException
+	 */
+	public static int lecturaClientes(String[] nombres, String[] apellidos, String[] ruts, String[] contraseñas,
+			int[] saldos) throws IOException {
+		int cantC = 0;
+		Scanner scanner = new Scanner(new File("Clientes.txt"));
+		while (scanner.hasNextLine()) {
+			String linea = scanner.nextLine();
+			String[] partes = linea.split(",");
+			String nombre = partes[0];
+			String apellido = partes[1];
+			String rut = partes[2];
+			String contraseña = partes[3];
+			int saldo = Integer.parseInt(partes[4]);
+			int indexC = index(ruts, rut, cantC);
+			if (indexC == -1) {
+				nombres[cantC] = nombre;
+				apellidos[cantC] = apellido;
+				ruts[cantC] = rut;
+				contraseñas[cantC] = contraseña;
+				saldos[cantC] = saldo;
+				cantC++;
+
+			}
+		}
+		scanner.close();
+		return cantC;
+	}
+
+	/**
+	 * Class to read data Peliculas.txt from files and store information
+	 * 
+	 * @param nombrePeliculas
+	 * @param tipoPeliculas
+	 * @param recaudacions
+	 * @param variables
+	 * @return returns the total amount entered
+	 * @throws IOException
+	 */
+	public static int lecturaPeliculas(String[] nombrePeliculas, String[] tipoPeliculas, int[] recaudacions,
+			String[] variables) throws IOException {
+		int cantP = 0;
+		Scanner scanner = new Scanner(new File("Peliculas.txt"));
+		while (scanner.hasNextLine()) {
+			String linea = scanner.nextLine();
+			String[] partes = linea.split(",");
+			String nombrePelicula = partes[0];
+			String tipoPelicula = partes[1];
+			int recaudacion = Integer.parseInt(partes[2]);
+			nombrePeliculas[cantP] = nombrePelicula;
+			tipoPeliculas[cantP] = tipoPelicula;
+			recaudacions[cantP] = recaudacion;
+			cantP++;
+			for (int j = 3; j < partes.length; j += 2) {
+				String sala = partes[j];
+				String horario = partes[j + 1];
+				String variable = sala + horario;
+				cantP++;
+			}
+
+		}
+		scanner.close();
+		return cantP;
+
+	}
+
+	/**
+	 * Class to read data Status.txt from files and store information
+	 * 
+	 * @param rutEstados
+	 * @param estados
+	 * @return returns the total amount entered
+	 * @throws IOException
+	 */
+	public static int lecturaStatus(String[] rutEstados, String[] estados) throws IOException {
+		int cantS = 0;
+		Scanner scanner = new Scanner(new File("Status.txt"));
+		while (scanner.hasNextLine()) {
+			String linea = scanner.nextLine();
+			String[] partes = linea.split(",");
+			String rutEstado = partes[0];
+			String estado = partes[1];
+			int indexS = index(rutEstados, rutEstado, cantS);
+			if (indexS == -1) {
+				rutEstados[cantS] = rutEstado;
+				estados[cantS] = estado;
+				cantS++;
+			}
+		}
+		scanner.close();
+		return cantS;
+
+	}
+
+	/**
+	 * Class created to perform the login menu
+	 * 
+	 * @param rut
+	 * @param contraseña
+	 * @param nombre
+	 * @param apellido
+	 * @param nombrePeliculas
+	 * @param variable
+	 * @param cantC
+	 * @param cantP
+	 * @param nombrePelicula
+	 * @param tipoPelicula
+	 * @param variable
+	 * @param saldo
+	 * @param inventario
+	 * @param sala1
+	 */
+	public static void iniciarSesion(String[] rut, String[] contraseña, String[] nombre, String[] apellido,
+			String[] nombrePeliculas, String[] variable, int cantC, int cantP, String[] nombrePelicula,
+			String[] tipoPelicula, int[] recaudacion, int[] saldo, int[] inventario, int[][] sala1) {
+
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese su rut y contraseña para iniciar sesión.");
+		System.out.println("Ingrese f para terminar el proceso.");
+		System.out.println("Ingrese su rut: ");
+		String rutIngresado = scanner.nextLine();
+		if (!rutIngresado.equals("f")) {
+			int indexRut = index(rut, rutIngresado, cantC);
+			if (formateoRut(rutIngresado).toLowerCase().equals(formateoRut(rut[indexRut]).toLowerCase())) {
+				System.out.println("Contraseña: ");
+				String contraseñaIngresada = scanner.nextLine();
+				int indexContraseña = index(contraseña, contraseñaIngresada, cantC);
+				if (indexContraseña != -1) {
+					if (indexRut == indexContraseña) {
+						System.out.println("Aprovado\n");
+						System.out.println(
+								"Bienvenido al menu de usuario, ingrese el número de la acción que desea hacer: ");
+						System.out.println("1 Para comprar entrada");
+						System.out.println("2 Para informacion usario");
+						System.out.println("3 Para devolucion entrada");
+						System.out.println("4 Para mostrar cartelera ");
+						System.out.println("5 Para salir");
+						String opcion = scanner.nextLine();
+						while (!opcion.equals("5")) {
+							if (opcion.equals("1")) {
+								desplegarMatriz(sala1);
+								System.out.println("1 Para comprar entrada");
+								System.out.println("2 Para informacion usario");
+								System.out.println("3 Para devolucion entrada");
+								System.out.println("4 Para mostrar cartelera ");
+								System.out.println("5 Para salir");
+								opcion = scanner.nextLine();
+								// comprarEntrada(rut, nombrePelicula, variable, cantP, inventario);
+							}
+							if (opcion.equals("2")) {
+								informacionUsuario(nombre, apellido, rut, saldo, nombrePelicula, cantC, cantP,
+										inventario);
+								System.out.println("1 Para comprar entrada");
+								System.out.println("2 Para informacion usario");
+								System.out.println("3 Para devolucion entrada");
+								System.out.println("4 Para mostrar cartelera ");
+								System.out.println("5 Para salir");
+								opcion = scanner.nextLine();
+							}
+							if (opcion.equals("3")) {
+								// devolucionEntrada();
+								System.out.println("1 Para comprar entrada");
+								System.out.println("2 Para informacion usario");
+								System.out.println("3 Para devolucion entrada");
+								System.out.println("4 Para mostrar cartelera ");
+								System.out.println("5 Para salir");
+								opcion = scanner.nextLine();
+							}
+							if (opcion.equals("4")) {
+								desplegarCartelera(nombrePeliculas, variable, cantP);
+								System.out.println("1 Para comprar entrada");
+								System.out.println("2 Para informacion usario");
+								System.out.println("3 Para devolucion entrada");
+								System.out.println("4 Para mostrar cartelera ");
+								System.out.println("5 Para salir");
+								opcion = scanner.nextLine();
+
+							}
+						}
+					}
+				} else {
+					System.out.println("Contraseña incorrecta, inicie sesion otra vez.");
+				}
+			} else {
+				System.out.println("Rut no encontrado.");
+			}
+
+		}
+		System.out.println("Si se desea registrar, escriba r.");
+		System.out.println("Si es ADMIN Ingrese su rut");
+		System.out.println("Ingrese su rut: ");
+		String rutIngresado1 = scanner.nextLine();
+		if (rutIngresado1.equals("ADMIN")) {
+			System.out.println("Contraseña: ");
+			String contraseñaAdmin = scanner.nextLine();
+			if (contraseñaAdmin.equals("ADMIN")) {
+				System.out.println("Aprovado.");
+				System.out.println("Bienvenido al menu de ADMIN, ingrese el número de la acción que desea hacer: ");
+				System.out.println("1 Para informacion de taquilla");
+				System.out.println("2 Para informacion cliente");
+				System.out.println("3 Para salir");
+				String opcion = scanner.nextLine();
+				while (!opcion.equals("3")) {
+					if (opcion.equals("1")) {
+						System.out.println("1 Para informacion de taquilla");
+						System.out.println("2 Para informacion cliente");
+						System.out.println("3 Para salir");
+						opcion = scanner.nextLine();
+						taquilla(nombrePelicula, tipoPelicula, recaudacion, cantP);
+						// informacionUsuario(nombre, apellido, rut, saldo, nombrePelicula, cantC,
+						// cantP, inventario);
+					}
+					if (opcion.equals("2")) {
+						System.out.println("1 Para informacion de taquilla");
+						System.out.println("2 Para informacion cliente");
+						System.out.println("3 Para salir");
+						opcion = scanner.nextLine();
+						// informacionUsuario(nombre, apellido, rut, saldo, nombrePelicula, cantC,
+						// cantP, inventario);
+					}
+				}
+
+			}
+		}
+		if (rutIngresado1.equals("r")) {
+			System.out.println("Ingrese su nombre: ");
+			String nuevoNombre = scanner.nextLine();
+			System.out.println("Ingrese su apellido: ");
+			String nuevoApellido = scanner.nextLine();
+			System.out.println("Ingrese su rut: ");
+			String nuevoRut = scanner.nextLine();
+			System.out.println("Ingrese su contraseña: ");
+			String nuevaContraseña1 = scanner.nextLine();
+			System.out.println("Ingrese su saldo: ");
+			int nuevoSaldo = Integer.parseInt(scanner.nextLine());
+			System.out.println("Ingrese su status [habilitado] y [no habilitado]: ");
+			String nuevoEstado = scanner.nextLine();
+			escritura("\n" + nuevoNombre, nuevoApellido, nuevoRut, nuevaContraseña1, nuevoSaldo);
+			escritura1("\n" + nuevoRut, nuevoEstado);
+			cantC++;
+
+		}
+		System.out.println("Saliendo del sistema");
+		scanner.close();
+
+	}
+
+	/**
+	 * Class whose function is display information for the user
+	 * 
+	 * @param nombrePeliculas
+	 * @param variable
+	 * @param cantP
+	 */
+	private static void desplegarCartelera(String[] nombrePeliculas, String[] variable, int cantP) {
+		for (int i = 0; i < cantP; i++) {
+			System.out.println("Se mostraran las peliculas disponibles:\n");
+			System.out.println("Peliculas:" + nombrePeliculas[i] + "\n sala y horario :" + variable[i] + "\n");
+		}
+	}
+
+	/**
+	 * Class whose function that its function is to return the money
+	 * 
+	 * @param rut
+	 * @param inventario
+	 * @param nombrePelicula
+	 * @param variable
+	 * @param cantC
+	 * @param cantP
+	 */
+	public static void devolucionEntrada(String[] rut, int[][] inventario, String[] nombrePelicula, String[] variable,
+			int cantC, int cantP) {
+
+	}
+
+	/**
+	 * Class whose function is display information for the user
+	 * 
+	 * @param nombre
+	 * @param apellido
+	 * @param rut
+	 * @param saldo
+	 * @param nombrePelicula
+	 * @param cantC
+	 * @param cantP
+	 * @param inventario
+	 */
+	public static void informacionUsuario(String[] nombre, String[] apellido, String[] rut, int[] saldo,
+			String[] nombrePelicula, int cantC, int cantP, int[] inventario) {
+		String salida = "";
+		Scanner scanner = new Scanner(System.in);
+		for (int i = 0; i < cantC; i++) {
+			salida += "Nombre=" + nombre[i] + "Apellido=" + apellido[i] + "Rut=" + rut[i] + "Saldo=" + saldo[i]
+					+ "Inventario=\n";
+			for (int j = 0; j < cantP; j++) {
+				salida += "Peliculas=" + nombrePelicula[j] + "Cantidad=" + inventario[i] + "\n";
+			}
+			salida += "\n";
+
+		}
+
+		System.out.println(salida);
+
+	}
+
+	/**
+	 * Class whose function is to be a sales menu
+	 * 
+	 * @param rut
+	 * @param nombrePelicula
+	 * @param variable
+	 * @param cantP
+	 * @param inventario
+	 */
+	private static void comprarEntrada(String[] rut, String[] nombrePelicula, String[] variable, int cantP,
+			int[][] inventario) {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese nombre de pelicula  a comprar: ");
+		String peliculaIngresada = scanner.nextLine();
+		for (int i = 0; i < cantP; i++) {
+			if (peliculaIngresada == nombrePelicula[i]) {
+				;
+				System.out.println("Nombre de la pelicula: " + nombrePelicula[i] + "Funciones :" + variable[i]);
+				System.out.println("Ingrese sala : ");
+				String salaIngresada = scanner.nextLine();
+				// mostrar matriz
+			} else {
+				System.out.println("La pelicula ingresada no existe");
+			}
+
+		}
+
+	}
+
+	/**
+	 * Class whose function is to overwrite the information modified in the program
+	 * to text files
+	 * 
+	 * @param nombre
+	 * @param apellido
+	 * @param rut
+	 * @param contraseña
+	 * @param saldo
+	 * @throws IOException
+	 */
+	public static void escritura(String nombre, String apellido, String rut, String contraseña, int saldo) {
+		try {
+			BufferedWriter escritura = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream("Clientes.txt", true)));
+			escritura.write(nombre + "," + apellido + "," + rut + "," + contraseña + "," + saldo);
+			System.out.println("Ya se encuentra registrado.");
+			escritura.close();
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	/**
+	 * Class whose function is to overwrite the information modified in the program
+	 * to text files
+	 * 
+	 * @param rut
+	 * @param estado
+	 * @throws IOException
+	 */
+	public static void escritura1(String rut, String estado) {
+		try {
+			BufferedWriter escritura1 = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream("Status.txt", true)));
+			escritura1.write(rut + "," + estado);
+			System.out.println("Ya se encuentra registrado.");
+			escritura1.close();
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	/**
+	 * Class whose function is to overwrite the information modified in the program
+	 * to text files
+	 * 
+	 * @param nombrePelicula
+	 * @param tipoPelicula
+	 * @param recaudacion
+	 * @param cantP
+	 * @return return total quantity
+	 */
+	private static int taquilla(String[] nombrePelicula, String[] tipoPelicula, int[] recaudacion, int cantP) {
+		int cantidadT = 0;
+		for (int i = 0; i < cantP; i++) {
+			int suma = 0;
+			suma += recaudacion[i];
+		}
+
+		return cantidadT;
+	}
+
+}
