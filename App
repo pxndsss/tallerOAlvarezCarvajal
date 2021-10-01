@@ -247,7 +247,7 @@ public class App {
 				int indexContraseña = index(contraseña, contraseñaIngresada, cantC);
 				if (indexContraseña != -1) {
 					if (indexRut == indexContraseña) {
-						System.out.println("Aprovado\n");
+						System.out.println("Aprobado\n");
 						System.out.println(
 								"Bienvenido al menu de usuario, ingrese el número de la acción que desea hacer: ");
 						System.out.println("1 Para comprar entrada");
@@ -314,7 +314,7 @@ public class App {
 			System.out.println("Contraseña: ");
 			String contraseñaAdmin = scanner.nextLine();
 			if (contraseñaAdmin.equals("ADMIN")) {
-				System.out.println("Aprovado.");
+				System.out.println("Aprobado.");
 				System.out.println("Bienvenido al menu de ADMIN, ingrese el número de la acción que desea hacer: ");
 				System.out.println("1 Para informacion de taquilla");
 				System.out.println("2 Para informacion cliente");
