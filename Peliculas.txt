@@ -1,0 +1,3 @@
+deadpool,liberada,1500000,2,M,1,M
+los simpsons,liberada,500000,2,T,1,T
+avatar,estreno,1500000,1,M,1,T,2,M

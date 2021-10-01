@@ -1,0 +1,3 @@
+111111111-1, no habilitado
+209923114, habilitado
+20.000.000-1,habilitado
